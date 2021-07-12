@@ -3,19 +3,28 @@ package me.marknzl.shared;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
+/**
+ * Base class for a packet
+ */
 public class Packet {
 
-    private byte[] payload;
-    private final ByteArrayOutputStream byteArrayOutputStream;
-    private final DataOutputStream dataOutputStream;
+    protected byte[] payload;
+    protected final ByteArrayOutputStream byteArrayOutputStream;
+    protected final DataOutputStream dataOutputStream;
 
+    /**
+     * Creates a packet
+     */
     public Packet() {
         this.byteArrayOutputStream = new ByteArrayOutputStream();
         this.dataOutputStream = new DataOutputStream(this.byteArrayOutputStream);
     }
 
+    /**
+     * Writes the packet's opcode to the byte array payload
+     * @param opcode The packet's opcode
+     */
     public void writeOpcode(Opcode opcode) {
         try {
             dataOutputStream.writeInt(0);
@@ -26,17 +35,11 @@ public class Packet {
         }
     }
 
-    public void writeFilename(String filename) {
-        try {
-            dataOutputStream.write(filename.getBytes(StandardCharsets.US_ASCII));
-            dataOutputStream.write(0x0);
-            writePayload();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void writePayload() throws IOException {
+    /**
+     * Flushes the internal byte stream to the byte array payload
+     * @throws IOException if an error occurs during payload writing
+     */
+    protected void writePayload() throws IOException {
         this.dataOutputStream.flush();
         this.payload = byteArrayOutputStream.toByteArray();
     }

@@ -1,16 +1,16 @@
 package me.marknzl.client;
 
+import me.marknzl.shared.UDPClient;
+
 import java.util.HashMap;
 
 public class CommandParser {
 
-    private HashMap<String, Command> commands;
-    private UDPClient udpClient;
+    private final HashMap<String, Command> commands;
 
-    public CommandParser(UDPClient udpClient) {
+    public CommandParser() {
         CommandUtils.initializeCommands();
         this.commands = CommandUtils.getCommands();
-        this.udpClient = udpClient;
     }
 
     public void parse(String input) {
@@ -18,12 +18,12 @@ public class CommandParser {
         String cmd = content[0];
         String[] args = null;
         if (content.length > 1) {
-            args = new String[content.length];
+            args = new String[content.length - 1];
             System.arraycopy(content, 1, args, 0, content.length - 1);
         }
 
         if (commands.containsKey(cmd)) {
-            commands.get(cmd).execute(args, this.udpClient);
+            commands.get(cmd).execute(args);
         } else {
             System.out.println("Unknown command!");
         }
