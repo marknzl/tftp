@@ -31,20 +31,18 @@ public class RRQ implements Command {
 
     @Override
     public void execute(String[] args) {
-        if (args == null) {
+        if (!Utils.validFileArgs(args)) {
             System.out.println(Utils.commandUsageFormat(this));
-        } else if (args.length != 1) {
-            System.out.println(Utils.commandUsageFormat(this));
+            return;
         }
 
-        assert args != null;
         String filename = args[0];
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
         System.out.print("Enter server address: ");
         String address = scanner.nextLine();
 
-        UDPClient client = null;
+        UDPClient client;
 
         try {
             client = new UDPClient(address, Constants.SERVER_LISTEN_PORT);
@@ -75,6 +73,7 @@ public class RRQ implements Command {
 
             DataPacket dataPacket = new DataPacket(serverPacket.getData());
             int tries = 5;
+            int bytesReceived = 0;
 
             while (true) {
                 if (tries == 0)
@@ -82,15 +81,22 @@ public class RRQ implements Command {
                 try {
                     short ackNum = dataPacket.getBlockNumber();
                     int blockSize = serverPacket.getLength() - 4;
+                    bytesReceived += blockSize;
                     fileBuf.write(dataPacket.getPayload(), 4, blockSize);
+
+                    System.out.printf("Received block %d of size %d bytes\nSending ACK for block %d\n", ackNum, blockSize, ackNum);
 
                     ACKPacket ackPacket = new ACKPacket(ackNum);
                     serverPacket.setData(ackPacket.getPayload());
                     socket.send(serverPacket);
 
-                    if (blockSize < 512)    // End of file transfer
+                    if (blockSize < 512) {  // Block size < 512 indicates end of file transfer
+                        System.out.printf("Block %d has size < 512 bytes - file transfer complete!", ackNum);
                         break;
+                    }
 
+                    // Start receiving next block of data...
+                    serverPacket = new DatagramPacket(buf, buf.length);
                     socket.receive(serverPacket);
                     dataPacket = new DataPacket(serverPacket.getData());
                 } catch (SocketTimeoutException ex) {
@@ -99,7 +105,7 @@ public class RRQ implements Command {
                 }
             }
 
-            System.out.printf("Received %d bytes\n", fileBuf.size());
+            System.out.printf("Received %d bytes\n", bytesReceived);
             File file = new File(Client.CLIENT_ROOT, filename);
             if (!file.exists()) {
                 boolean created = file.createNewFile();

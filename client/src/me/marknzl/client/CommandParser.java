@@ -1,7 +1,5 @@
 package me.marknzl.client;
 
-import me.marknzl.shared.UDPClient;
-
 import java.util.HashMap;
 
 public class CommandParser {
@@ -22,8 +20,8 @@ public class CommandParser {
             System.arraycopy(content, 1, args, 0, content.length - 1);
         }
 
-        if (commands.containsKey(cmd)) {
-            commands.get(cmd).execute(args);
+        if (commands.containsKey(cmd.toLowerCase())) {
+            commands.get(cmd.toLowerCase()).execute(args);
         } else {
             System.out.println("Unknown command!");
         }

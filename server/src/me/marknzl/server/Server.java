@@ -40,9 +40,8 @@ public class Server {
 
                 switch (packet.getOpcode()) {
                     case RRQ:
-                        System.out.println("RRQ received");
                         RRQPacket rrq = new RRQPacket(clientPacket.getData());
-                        System.out.println(rrq.getFilename());
+                        System.out.printf("RRQ received for '%s'\n", rrq.getFilename());
 
                         File file = new File(rootDir, rrq.getFilename());
                         if (!(file.exists() || file.isDirectory())) {
@@ -61,6 +60,7 @@ public class Server {
                         while (bytesRead != -1) {
                             DataPacket dataPacket = new DataPacket(blockNum, fileBuf, 0, bytesRead);
                             DatagramPacket outgoingDataPacket = new DatagramPacket(dataPacket.getPayload(), dataPacket.getPayload().length, clientPacket.getSocketAddress());
+                            System.out.printf("Sent %d bytes\n", outgoingDataPacket.getLength());
                             socket.send(outgoingDataPacket);
 
                             System.out.printf("Waiting for client's ACK for block %d\n", blockNum);
@@ -69,18 +69,13 @@ public class Server {
                             socket.receive(incomingAck);
                             ACKPacket ackPacket = new ACKPacket(incomingAck.getData());
 
-                            if (ackPacket.getBlockNumber() != blockNum) {
-                                System.out.println("ACK doesn't match");
-                            }
-
-                            System.out.printf("ACK received for block %d\n", blockNum);
-
-                            if (bytesRead < 512)
-                                break;
+                            System.out.printf("ACK received for block %d\n", ackPacket.getBlockNumber());
 
                             bytesRead = fileInputStream.read(fileBuf);
-                            blockNum++;
+                            blockNum = (short) ((blockNum == Short.MAX_VALUE) ? 0 : blockNum + 1);  // To handle exceeding the max short value (32,767)
                         }
+
+                        System.out.printf("Transfer of '%s' complete.\n", rrq.getFilename());
                     case WRQ:
                         WRQPacket wrq = new WRQPacket(clientPacket.getData());
                 }

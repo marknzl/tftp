@@ -29,20 +29,18 @@ public class WRQ implements Command {
 
     @Override
     public void execute(String[] args) {
-        if (args == null) {
+        if (!Utils.validFileArgs(args)) {
             System.out.println(Utils.commandUsageFormat(this));
-        } else if (args.length != 1) {
-            System.out.println(Utils.commandUsageFormat(this));
+            return;
         }
 
-        assert args != null;
         String filename = args[0];
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
         System.out.print("Enter server address: ");
         String address = scanner.nextLine();
 
-        UDPClient client = null;
+        UDPClient client;
 
         try {
             client = new UDPClient(address, Constants.SERVER_LISTEN_PORT);
