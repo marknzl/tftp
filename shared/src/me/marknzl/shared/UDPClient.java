@@ -11,6 +11,7 @@ public class UDPClient {
     private final DatagramSocket socket;
     private final InetAddress address;
     private final int listenPort;
+    private byte[] buf;
 
     /**
      * Creates an instance of a UDP Client handle
@@ -23,6 +24,7 @@ public class UDPClient {
         this.address = InetAddress.getByName(address);
         this.socket = new DatagramSocket();
         this.listenPort = listenPort;
+        this.buf = new byte[1024];
     }
 
     /**
@@ -40,6 +42,18 @@ public class UDPClient {
      */
     public void close() {
         this.socket.close();
+    }
+
+    /**
+     * Gets the underlying DatagramSocket for the UDP Client handle
+     * @return the underlying DatagramSocket for the UDP Client handle
+     */
+    public DatagramSocket getSocket() {
+        return this.socket;
+    }
+
+    public byte[] getBuffer() {
+        return this.buf;
     }
 
 }

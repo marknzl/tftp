@@ -3,15 +3,11 @@ package me.marknzl.client.commands;
 import me.marknzl.client.Command;
 import me.marknzl.client.Utils;
 import me.marknzl.shared.Constants;
-import me.marknzl.shared.Opcode;
 import me.marknzl.shared.Packets.WRQPacket;
 import me.marknzl.shared.UDPClient;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class WRQ implements Command {
@@ -39,13 +35,8 @@ public class WRQ implements Command {
             System.out.println(Utils.commandUsageFormat(this));
         }
 
+        assert args != null;
         String filename = args[0];
-
-        File file = new File(filename);
-        if (!(file.exists() || file.isDirectory())) {
-            System.out.println("File doesn't exist!");
-            return;
-        }
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
         System.out.print("Enter server address: ");
@@ -54,18 +45,13 @@ public class WRQ implements Command {
         UDPClient client = null;
 
         try {
-            client = new UDPClient(address, Constants.LISTEN_PORT);
-        } catch (SocketException | UnknownHostException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-        }
+            client = new UDPClient(address, Constants.SERVER_LISTEN_PORT);
 
-        WRQPacket packet = new WRQPacket();
-        packet.writeOpcode(Opcode.WRQ);
-        packet.writeFilename(filename);
-        byte[] payload = packet.getPayload();
+            WRQPacket packet = new WRQPacket();
+            packet.writeFilename(filename);
+            byte[] payload = packet.getPayload();
+            System.out.println(payload.length);
 
-        try {
             client.send(payload);
         } catch (IOException ex) {
             ex.printStackTrace();

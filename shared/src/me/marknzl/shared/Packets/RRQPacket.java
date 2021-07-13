@@ -1,5 +1,7 @@
 package me.marknzl.shared.Packets;
 
+import me.marknzl.shared.FileUtils;
+import me.marknzl.shared.Opcode;
 import me.marknzl.shared.Packet;
 
 import java.io.IOException;
@@ -12,6 +14,7 @@ public class RRQPacket extends Packet {
 
     public RRQPacket() {
         super();
+        writeOpcode(Opcode.RRQ);
     }
 
     /**
@@ -19,13 +22,7 @@ public class RRQPacket extends Packet {
      * @param data The pre-existing byte array
      */
     public RRQPacket(byte[] data) {
-        try {
-            dataOutputStream.write(data);
-            dataOutputStream.flush();
-            writePayload();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        super(data);
     }
 
     /**
@@ -40,6 +37,14 @@ public class RRQPacket extends Packet {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Gets the filename
+     * @return the filename
+     */
+    public String getFilename() throws IOException {
+        return FileUtils.charArrayToString(this.payload, 2);
     }
 
 }

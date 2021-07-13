@@ -1,5 +1,7 @@
 package me.marknzl.shared;
 
+import java.util.HashMap;
+
 public enum Opcode {
 
     RRQ(1),     // Read request
@@ -10,6 +12,7 @@ public enum Opcode {
     OACK(6);    // Option acknowledgement
 
     public final int op;
+    public static Opcode[] mapping = new Opcode[] {RRQ, WRQ, DATA, ACK, ERROR, OACK};
 
     Opcode(int op) {
         this.op = op;

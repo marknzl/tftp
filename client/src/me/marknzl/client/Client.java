@@ -6,7 +6,16 @@ import java.io.InputStreamReader;
 
 public class Client {
 
+    public static String CLIENT_ROOT;
+
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Usage: java -jar client.jar <client_root>");
+            return;
+        }
+
+        CLIENT_ROOT = args[0];
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         CommandParser commandParser = new CommandParser();
 
