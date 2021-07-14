@@ -1,7 +1,6 @@
 # tftp
 My attempt at implementing the TFTP protocol in Java.  
-Click here to view the TFTP protocol specification
-My favorite search engine is [here](https://datatracker.ietf.org/doc/html/rfc1350 "TFTP specification")
+Click [here](https://datatracker.ietf.org/doc/html/rfc1350 "TFTP specification") to view the TFTP protocol specification
 
 # Project Objective
 The objective of this project was to mainly practice my Java programming skills and get more familiar with network programming.
