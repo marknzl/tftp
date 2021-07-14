@@ -30,6 +30,10 @@ public class ACKPacket extends Packet {
         super(data);
     }
 
+    /**
+     * Gets the block number for the corresponding ACK
+     * @return the block number for the corresponding ACK
+     */
     public short getBlockNumber() {
         return (short)(((payload[2] & 0xFF) << 8) | (payload[3] & 0xFF));
     }

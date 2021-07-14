@@ -21,6 +21,10 @@ public class Packet {
         this.dataOutputStream = new DataOutputStream(this.byteArrayOutputStream);
     }
 
+    /**
+     * Creates a Packet from a pre-existing byte array
+     * @param data The pre-existing byte array
+     */
     public Packet(byte[] data) {
         this.byteArrayOutputStream = new ByteArrayOutputStream();
         this.dataOutputStream = new DataOutputStream(this.byteArrayOutputStream);

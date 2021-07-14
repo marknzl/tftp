@@ -101,6 +101,8 @@ public class WRQ implements Command {
                 bytesRead = fileInputStream.read(fileBuf);
                 blockNum = (short) ((blockNum == Short.MAX_VALUE) ? 0 : blockNum + 1);
             }
+
+            client.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

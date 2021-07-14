@@ -1,7 +1,5 @@
 package me.marknzl.client;
 
-import me.marknzl.shared.UDPClient;
-
 public interface Command {
 
     String getCommand();

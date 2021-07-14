@@ -1,7 +1,5 @@
 package me.marknzl.shared;
 
-import java.util.HashMap;
-
 public enum Opcode {
 
     RRQ(1),     // Read request

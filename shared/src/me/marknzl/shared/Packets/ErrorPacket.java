@@ -35,10 +35,19 @@ public class ErrorPacket extends Packet {
         super(data);
     }
 
+    /**
+     * Gets the error message for the corresponding Error packet
+     * @return the error message for the corresponding Error packet
+     * @throws IOException if char array to string conversion fails
+     */
     public String getErrorMessage() throws IOException {
         return FileUtils.charArrayToString(this.payload, 4);
     }
 
+    /**
+     * Gets the error code 
+     * @return
+     */
     public ErrorCode getErrorCode() {
         return ErrorCode.intToECMappings[this.payload[3]];
     }

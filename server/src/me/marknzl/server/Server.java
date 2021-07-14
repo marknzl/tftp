@@ -74,6 +74,7 @@ public class Server {
                         WRQPacket wrq = new WRQPacket(clientPacket.getData());
                         System.out.printf("WRQ received for '%s'\n", wrq.getFilename());
                         File file = new File(rootDir, wrq.getFilename());
+
                         if (file.exists()) {
                             ErrorPacket errorPacket = new ErrorPacket(ErrorCode.FILE_ALREADY_EXISTS, "File already exists!");
                             System.out.println("Error - File already exists!");
@@ -81,6 +82,7 @@ public class Server {
                             socket.send(response);
                             break;
                         }
+
                         ACKPacket ackPacket = new ACKPacket((short) 0);
                         DatagramPacket response = new DatagramPacket(ackPacket.getPayload(), ackPacket.getPayload().length, clientPacket.getSocketAddress());
                         socket.send(response);
@@ -93,7 +95,7 @@ public class Server {
                             socket.receive(clientPacket);
                             DataPacket dataPacket = new DataPacket(clientPacket.getData());
                             blockNum = dataPacket.getBlockNumber();
-                            int receivedBlockSize = clientPacket.getLength() - 4;
+                            int receivedBlockSize = clientPacket.getLength() - 4;   // Minus 4 since DataPacket headers take 4 bytes
                             System.out.printf("Received %d bytes\n", receivedBlockSize);
                             bytesReceived += receivedBlockSize;
 
@@ -114,6 +116,7 @@ public class Server {
                         FileOutputStream fileOutputStream = new FileOutputStream(file);
                         recvFileBuf.writeTo(fileOutputStream);
                         fileOutputStream.close();
+                        recvFileBuf.close();
                     }
                 }
             } catch (IOException ex) {

@@ -127,6 +127,7 @@ public class RRQ implements Command {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             fileBuf.writeTo(fileOutputStream);
             fileOutputStream.close();
+            client.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

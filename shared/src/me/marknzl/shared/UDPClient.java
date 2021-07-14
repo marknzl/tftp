@@ -3,15 +3,15 @@ package me.marknzl.shared;
 import java.io.IOException;
 import java.net.*;
 
-/** Represents a UDP Client handle
- *
+/**
+ * Represents a UDP Client handle
  */
 public class UDPClient {
 
     private final DatagramSocket socket;
     private final InetAddress address;
     private final int listenPort;
-    private byte[] buf;
+    private final byte[] buf;
 
     /**
      * Creates an instance of a UDP Client handle
@@ -54,6 +54,10 @@ public class UDPClient {
         return this.socket;
     }
 
+    /**
+     * Gets the underlying buffer for the UDP Client handle's DatagramSocket
+     * @return the underlying buffer for the UDP Client handle's DatagramSocket
+     */
     public byte[] getBuffer() {
         return this.buf;
     }
