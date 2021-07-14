@@ -18,7 +18,7 @@ public class ErrorPacket extends Packet {
         writeOpcode(Opcode.ERROR);
         try {
             dataOutputStream.writeByte(0x0);
-            dataOutputStream.writeByte(ErrorCode.mappings.get(errorCode));
+            dataOutputStream.writeByte(ErrorCode.ecToIntMappings.get(errorCode));
             dataOutputStream.write(errorMessage.getBytes(StandardCharsets.US_ASCII));
             dataOutputStream.writeByte(0x0);
             writePayload();
@@ -37,6 +37,10 @@ public class ErrorPacket extends Packet {
 
     public String getErrorMessage() throws IOException {
         return FileUtils.charArrayToString(this.payload, 4);
+    }
+
+    public ErrorCode getErrorCode() {
+        return ErrorCode.intToECMappings[this.payload[3]];
     }
 
 }

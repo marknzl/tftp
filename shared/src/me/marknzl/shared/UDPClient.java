@@ -31,10 +31,12 @@ public class UDPClient {
      * Sends a byte array payload to the host
      * @param payload A byte array payload
      * @throws IOException if an error occurs during transmission
+     * @return number of bytes sent
      */
-    public void send(byte[] payload) throws IOException {
+    public int send(byte[] payload) throws IOException {
         DatagramPacket packet = new DatagramPacket(payload, payload.length, this.address, this.listenPort);
         socket.send(packet);
+        return packet.getLength();
     }
 
     /**

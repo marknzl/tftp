@@ -69,29 +69,33 @@ public class RRQ implements Command {
             }
 
             ByteArrayOutputStream fileBuf = new ByteArrayOutputStream();
-            socket.setSoTimeout(5000);
+            int timeout = Constants.BASE_TIMEOUT;
+            socket.setSoTimeout(timeout);
 
             DataPacket dataPacket = new DataPacket(serverPacket.getData());
             int tries = 5;
             int bytesReceived = 0;
+            boolean retransmit = false;
 
             while (true) {
                 if (tries == 0)
                     break;
                 try {
                     short ackNum = dataPacket.getBlockNumber();
-                    int blockSize = serverPacket.getLength() - 4;
-                    bytesReceived += blockSize;
-                    fileBuf.write(dataPacket.getPayload(), 4, blockSize);
+                    int receivedBlockSize = serverPacket.getLength() - 4;
 
-                    System.out.printf("Received block %d of size %d bytes\nSending ACK for block %d\n", ackNum, blockSize, ackNum);
+                    if (!retransmit) {
+                        bytesReceived += receivedBlockSize;
+                        fileBuf.write(dataPacket.getPayload(), 4, receivedBlockSize);
+                        System.out.printf("Received block %d of size %d bytes\nSending ACK for block %d\n", ackNum, receivedBlockSize, ackNum);
+                    }
 
                     ACKPacket ackPacket = new ACKPacket(ackNum);
                     serverPacket.setData(ackPacket.getPayload());
                     socket.send(serverPacket);
 
-                    if (blockSize < 512) {  // Block size < 512 indicates end of file transfer
-                        System.out.printf("Block %d has size < 512 bytes - file transfer complete!", ackNum);
+                    if (receivedBlockSize < Constants.BLOCK_SIZE) {  // Block size < 512 indicates end of file transfer
+                        System.out.printf("Block %d has size < 512 bytes - file transfer complete!\n", ackNum);
                         break;
                     }
 
@@ -99,9 +103,13 @@ public class RRQ implements Command {
                     serverPacket = new DatagramPacket(buf, buf.length);
                     socket.receive(serverPacket);
                     dataPacket = new DataPacket(serverPacket.getData());
+                    retransmit = false;
                 } catch (SocketTimeoutException ex) {
                     System.out.printf("Timed out... %d tries left.\n", tries);
+                    timeout += 1000;    // Increase the timeout by 1 second for every subsequent retry
                     tries--;
+                    socket.setSoTimeout(timeout);
+                    retransmit = true;
                 }
             }
 
@@ -115,6 +123,7 @@ public class RRQ implements Command {
                     return;
                 }
             }
+
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             fileBuf.writeTo(fileOutputStream);
             fileOutputStream.close();
