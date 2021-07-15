@@ -103,6 +103,7 @@ public class WRQ implements Command {
             }
 
             client.close();
+            fileInputStream.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

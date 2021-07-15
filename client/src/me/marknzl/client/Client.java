@@ -18,6 +18,7 @@ public class Client {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         CommandParser commandParser = new CommandParser();
+        System.out.println("TFTP client initialized. Type 'help' for a list of commands.");
 
         while (true) {
             try {

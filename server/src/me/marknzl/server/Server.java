@@ -29,7 +29,9 @@ public class Server {
         byte[] recvBuf = new byte[1024];
         DatagramSocket socket = new DatagramSocket(Constants.SERVER_LISTEN_PORT);
         File rootDir = new File(fileRoot);
+        System.out.printf("TFTP server started on port %d\n", Constants.SERVER_LISTEN_PORT);
 
+        //noinspection InfiniteLoopStatement - to suppress the false positive warning in IntelliJ.
         while (true) {
             try {
                 DatagramPacket clientPacket = new DatagramPacket(recvBuf, recvBuf.length);
@@ -69,6 +71,7 @@ public class Server {
                             blockNum = (short) ((blockNum == Short.MAX_VALUE) ? 0 : blockNum + 1);  // To handle exceeding the max short value (32,767)
                         }
                         System.out.printf("Transfer of '%s' complete.\n", rrq.getFilename());
+                        fileInputStream.close();
                     }
                     case WRQ -> {
                         WRQPacket wrq = new WRQPacket(clientPacket.getData());
