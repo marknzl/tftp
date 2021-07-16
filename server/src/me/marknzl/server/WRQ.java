@@ -53,22 +53,24 @@ public class WRQ {
         int tries = 5;
 
         try {
+            socket.setSoTimeout(Constants.BASE_TIMEOUT);
+
+            ACKPacket initialAck = new ACKPacket(blockNum);
+            DatagramPacket response = new DatagramPacket(initialAck.getPayload(), initialAck.getPayload().length, clientPacket.getSocketAddress());
+
+            try {
+                socket.send(response);
+            } catch (IOException ex) {
+                System.out.println("Failed to send initial ACK!");
+                ex.printStackTrace();
+                System.exit(1);
+            }
+
             while (true) {
                 if (tries == 0) {
                     System.out.println("Max transmission attempts reached. File transfer failed.");
                     socket.setSoTimeout(Constants.BASE_TIMEOUT);
                     recvFileBuf.close();
-                }
-
-                ACKPacket initialAck = new ACKPacket(blockNum);
-                DatagramPacket response = new DatagramPacket(initialAck.getPayload(), initialAck.getPayload().length, clientPacket.getSocketAddress());
-
-                try {
-                    socket.send(response);
-                } catch (IOException ex) {
-                    System.out.println("Failed to send initial ACK!");
-                    ex.printStackTrace();
-                    System.exit(1);
                 }
 
                 try {

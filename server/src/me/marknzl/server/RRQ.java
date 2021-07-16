@@ -59,6 +59,7 @@ public class RRQ {
         byte[] fileBuf = new byte[Constants.BLOCK_SIZE];
 
         try {
+            socket.setSoTimeout(Constants.BASE_TIMEOUT);
             int bytesRead = fileInputStream.read(fileBuf);
 
             while (bytesRead != -1) {

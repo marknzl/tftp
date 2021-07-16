@@ -1,7 +1,5 @@
 package me.marknzl.client;
 
-import java.util.Random;
-
 public class Utils {
 
     public static String commandUsageFormat(Command command) {

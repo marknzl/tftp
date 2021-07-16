@@ -22,7 +22,6 @@ public class UDPServer {
     public UDPServer(int listenPort, int bufSize, String fileRoot) throws SocketException {
         this.buf = new byte[bufSize];
         this.socket = new DatagramSocket(listenPort);
-        this.socket.setSoTimeout(Constants.BASE_TIMEOUT);
         this.rootDir = new File(fileRoot);
     }
 
