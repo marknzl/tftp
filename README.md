@@ -31,10 +31,12 @@ Clone the repo onto your system into a location of your choice
 Open the project in IntelliJ IDEA
 
 ## Step 3
-At the top on the toolbar, click `Build` and then click `Build Artifacts...`
+At the top on the toolbar, click `Build` and then click `Build Artifacts...`  
+
 ![Step 3-1](screenshots/step3-1.jpg "Step 3-1 - Build, Build Artifacts...")
 
-A menu should pop up; hover over `All Artifacts`, and click `Build`
+A menu should pop up; hover over `All Artifacts`, and click `Build`  
+
 ![Step 3-2](screenshots/step3-2.jpg "Step 3-2 - Build all artifacts")
 
 The final JAR files should now be in `tftp/bin/`.
@@ -44,6 +46,7 @@ The final JAR files should now be in `tftp/bin/`.
 *(Optional): Copy the two JAR files somewhere else onto your disk if you want*
 
 In the directory of the two JAR files, create a root file folder for the client and server. In my example below, I named my root directories `client_root` and `server_root`:
+
 ![Step 4](screenshots/step4.jpg "Step 4 - Folder creation")
 
 ## Step 5
