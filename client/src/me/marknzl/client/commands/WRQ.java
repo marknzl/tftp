@@ -2,15 +2,12 @@ package me.marknzl.client.commands;
 
 import me.marknzl.client.Client;
 import me.marknzl.client.Command;
-import me.marknzl.client.Utils;
-import me.marknzl.shared.Constants;
-import me.marknzl.shared.Opcode;
-import me.marknzl.shared.Packet;
+import me.marknzl.client.ClientUtils;
+import me.marknzl.shared.*;
 import me.marknzl.shared.Packets.ACKPacket;
 import me.marknzl.shared.Packets.DataPacket;
 import me.marknzl.shared.Packets.ErrorPacket;
 import me.marknzl.shared.Packets.WRQPacket;
-import me.marknzl.shared.UDPClient;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +15,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.Scanner;
 
 public class WRQ implements Command {
@@ -39,8 +39,8 @@ public class WRQ implements Command {
 
     @Override
     public void execute(String[] args) {
-        if (!Utils.validFileArgs(args)) {
-            System.out.println(Utils.commandUsageFormat(this));
+        if (!ClientUtils.validFileArgs(args)) {
+            System.out.println(ClientUtils.commandUsageFormat(this));
             return;
         }
 
@@ -51,6 +51,17 @@ public class WRQ implements Command {
             System.out.println("File doesn't exist!");
             return;
         }
+
+        MessageDigest messageDigest = null;
+
+        try {
+            messageDigest = MessageDigest.getInstance("md5");
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+        }
+
+        if (messageDigest == null)
+            return;
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
         System.out.print("Enter server address: ");
@@ -98,10 +109,13 @@ public class WRQ implements Command {
                 ACKPacket ackPacket = new ACKPacket(serverPacket.getData());
                 System.out.printf("ACK received for block %d\n", ackPacket.getBlockNumber());
 
+                messageDigest.update(fileBuf, 0, bytesRead);
+
                 bytesRead = fileInputStream.read(fileBuf);
                 blockNum = (short) ((blockNum == Short.MAX_VALUE) ? 0 : blockNum + 1);
             }
 
+            System.out.printf("MD5 checksum of file = %s\n", SharedUtils.md5DigestToString(messageDigest));
             client.close();
             fileInputStream.close();
         } catch (IOException ex) {

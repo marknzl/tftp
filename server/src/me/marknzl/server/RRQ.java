@@ -6,6 +6,7 @@ import me.marknzl.shared.Packets.ACKPacket;
 import me.marknzl.shared.Packets.DataPacket;
 import me.marknzl.shared.Packets.ErrorPacket;
 import me.marknzl.shared.Packets.RRQPacket;
+import me.marknzl.shared.SharedUtils;
 import me.marknzl.shared.UDPServer;
 
 import java.io.File;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class RRQ {
 
@@ -54,6 +57,17 @@ public class RRQ {
         if (fileInputStream == null)
             System.exit(1);
 
+        MessageDigest messageDigest = null;
+
+        try {
+            messageDigest = MessageDigest.getInstance("md5");
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+        }
+
+        if (messageDigest == null)
+            return;
+
         short blockNum = 1;
         int tries = 5;  // Default tries before timeout
         byte[] fileBuf = new byte[Constants.BLOCK_SIZE];
@@ -74,6 +88,7 @@ public class RRQ {
                 DatagramPacket outgoingPacket = new DatagramPacket(dataPacket.getPayload(), dataPacket.getPayload().length, clientPacket.getSocketAddress());
                 socket.send(outgoingPacket);
                 System.out.printf("Sent %d bytes\n", outgoingPacket.getLength());
+                messageDigest.update(fileBuf, 0, bytesRead);
 
                 System.out.printf("Waiting for client's ACK for block %d\n", blockNum);
 
@@ -99,6 +114,7 @@ public class RRQ {
         }
 
         System.out.printf("Transfer of '%s' complete.\n", filename);
+        System.out.printf("MD5 checksum of file = %s\n", SharedUtils.md5DigestToString(messageDigest));
 
         try {
             fileInputStream.close();

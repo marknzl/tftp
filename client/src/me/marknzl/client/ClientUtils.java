@@ -1,6 +1,6 @@
 package me.marknzl.client;
 
-public class Utils {
+public class ClientUtils {
 
     public static String commandUsageFormat(Command command) {
         return String.format("%s - %s\n", command.getCommand(), command.getDescription()) +

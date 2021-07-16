@@ -42,7 +42,7 @@ public class UDPServer {
     }
 
     /**
-     * Get's the root directory
+     * Gets the root directory
      * @return the root directory
      */
     public File getRootDir() {

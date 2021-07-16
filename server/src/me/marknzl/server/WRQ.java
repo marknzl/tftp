@@ -6,6 +6,7 @@ import me.marknzl.shared.Packets.ACKPacket;
 import me.marknzl.shared.Packets.DataPacket;
 import me.marknzl.shared.Packets.ErrorPacket;
 import me.marknzl.shared.Packets.WRQPacket;
+import me.marknzl.shared.SharedUtils;
 import me.marknzl.shared.UDPServer;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class WRQ {
 
@@ -66,6 +69,15 @@ public class WRQ {
                 System.exit(1);
             }
 
+            MessageDigest messageDigest = null;
+
+            try {
+                messageDigest = MessageDigest.getInstance("md5");
+            } catch (NoSuchAlgorithmException ex) {
+                ex.printStackTrace();
+                return;
+            }
+
             while (true) {
                 if (tries == 0) {
                     System.out.println("Max transmission attempts reached. File transfer failed.");
@@ -82,6 +94,7 @@ public class WRQ {
                     System.out.printf("Received %d bytes\n", receivedBlockSize);
                     bytesReceived += receivedBlockSize;
                     recvFileBuf.write(dataPacket.getPayload(), 4, receivedBlockSize);
+                    messageDigest.update(dataPacket.getPayload(), 4, receivedBlockSize);
                     tries = 5;
 
                     ACKPacket ackPacket = new ACKPacket(blockNum);
@@ -105,6 +118,7 @@ public class WRQ {
             }
 
             System.out.printf("Received %d bytes, file transfer complete.\n", bytesReceived);
+            System.out.printf("MD5 checksum of file = %s\n", SharedUtils.md5DigestToString(messageDigest));
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             recvFileBuf.writeTo(fileOutputStream);
             fileOutputStream.close();

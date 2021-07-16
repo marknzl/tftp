@@ -1,6 +1,6 @@
 package me.marknzl.shared.Packets;
 
-import me.marknzl.shared.FileUtils;
+import me.marknzl.shared.SharedUtils;
 import me.marknzl.shared.Opcode;
 import me.marknzl.shared.Packet;
 
@@ -44,7 +44,7 @@ public class RRQPacket extends Packet {
      * @return the filename
      */
     public String getFilename() throws IOException {
-        return FileUtils.charArrayToString(this.payload, 2);
+        return SharedUtils.charArrayToString(this.payload, 2);
     }
 
 }

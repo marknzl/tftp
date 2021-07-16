@@ -1,7 +1,7 @@
 package me.marknzl.shared.Packets;
 
 import me.marknzl.shared.ErrorCode;
-import me.marknzl.shared.FileUtils;
+import me.marknzl.shared.SharedUtils;
 import me.marknzl.shared.Opcode;
 import me.marknzl.shared.Packet;
 
@@ -41,7 +41,7 @@ public class ErrorPacket extends Packet {
      * @throws IOException if char array to string conversion fails
      */
     public String getErrorMessage() throws IOException {
-        return FileUtils.charArrayToString(this.payload, 4);
+        return SharedUtils.charArrayToString(this.payload, 4);
     }
 
     /**

@@ -2,7 +2,7 @@ package me.marknzl.client.commands;
 
 import me.marknzl.client.Client;
 import me.marknzl.client.Command;
-import me.marknzl.client.Utils;
+import me.marknzl.client.ClientUtils;
 import me.marknzl.shared.*;
 import me.marknzl.shared.Packets.*;
 
@@ -10,6 +10,8 @@ import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 public class RRQ implements Command {
@@ -31,8 +33,8 @@ public class RRQ implements Command {
 
     @Override
     public void execute(String[] args) {
-        if (!Utils.validFileArgs(args)) {
-            System.out.println(Utils.commandUsageFormat(this));
+        if (!ClientUtils.validFileArgs(args)) {
+            System.out.println(ClientUtils.commandUsageFormat(this));
             return;
         }
 
@@ -72,6 +74,17 @@ public class RRQ implements Command {
             int timeout = Constants.BASE_TIMEOUT;
             socket.setSoTimeout(timeout);
 
+            MessageDigest messageDigest = null;
+
+            try {
+                messageDigest = MessageDigest.getInstance("md5");
+            } catch (NoSuchAlgorithmException ex) {
+                ex.printStackTrace();
+            }
+
+            if (messageDigest == null)
+                return;
+
             DataPacket dataPacket = new DataPacket(serverPacket.getData());
             int tries = 5;
             int bytesReceived = 0;
@@ -87,6 +100,7 @@ public class RRQ implements Command {
                     if (!retransmit) {
                         bytesReceived += receivedBlockSize;
                         fileBuf.write(dataPacket.getPayload(), 4, receivedBlockSize);
+                        messageDigest.update(dataPacket.getPayload(), 4, receivedBlockSize);
                         System.out.printf("Received block %d of size %d bytes\nSending ACK for block %d\n", ackNum, receivedBlockSize, ackNum);
                     }
 
@@ -114,6 +128,7 @@ public class RRQ implements Command {
             }
 
             System.out.printf("Received %d bytes\n", bytesReceived);
+            System.out.printf("MD5 checksum of file = %s\n", SharedUtils.md5DigestToString(messageDigest));
             File file = new File(Client.CLIENT_ROOT, filename);
             if (!file.exists()) {
                 boolean created = file.createNewFile();

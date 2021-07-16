@@ -2,8 +2,7 @@ package me.marknzl.client.commands;
 
 import me.marknzl.client.Command;
 import me.marknzl.client.CommandUtils;
-import me.marknzl.client.Utils;
-import me.marknzl.shared.UDPClient;
+import me.marknzl.client.ClientUtils;
 
 import java.util.HashMap;
 
@@ -35,7 +34,7 @@ public class Help implements Command {
         } else {
             if (commands.containsKey(args[0])) {    // Specific command help
                 Command command = commands.get(args[0]);
-                System.out.println(Utils.commandUsageFormat(command));
+                System.out.println(ClientUtils.commandUsageFormat(command));
             } else {
                 System.out.println("Unknown command!");
             }
