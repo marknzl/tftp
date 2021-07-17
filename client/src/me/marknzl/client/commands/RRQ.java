@@ -4,7 +4,7 @@ import me.marknzl.client.Client;
 import me.marknzl.client.Command;
 import me.marknzl.client.ClientUtils;
 import me.marknzl.shared.*;
-import me.marknzl.shared.Packets.*;
+import me.marknzl.shared.packets.*;
 
 import java.io.*;
 import java.net.DatagramPacket;

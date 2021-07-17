@@ -1,4 +1,4 @@
-package me.marknzl.shared.Packets;
+package me.marknzl.shared.packets;
 
 import me.marknzl.shared.SharedUtils;
 import me.marknzl.shared.Opcode;
@@ -8,20 +8,20 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Represents a Read Request Packet
+ * Represents a Write Request Packet
  */
-public class RRQPacket extends Packet {
+public class WRQPacket extends Packet {
 
-    public RRQPacket() {
+    public WRQPacket() {
         super();
-        writeOpcode(Opcode.RRQ);
+        writeOpcode(Opcode.WRQ);
     }
 
     /**
-     * Creates a Read Request Packet from a pre-existing byte array
+     * Creates a Write Request Packet from a pre-existing byte array
      * @param data The pre-existing byte array
      */
-    public RRQPacket(byte[] data) {
+    public WRQPacket(byte[] data) {
         super(data);
     }
 

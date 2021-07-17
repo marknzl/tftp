@@ -2,10 +2,10 @@ package me.marknzl.server;
 
 import me.marknzl.shared.Constants;
 import me.marknzl.shared.ErrorCode;
-import me.marknzl.shared.Packets.ACKPacket;
-import me.marknzl.shared.Packets.DataPacket;
-import me.marknzl.shared.Packets.ErrorPacket;
-import me.marknzl.shared.Packets.RRQPacket;
+import me.marknzl.shared.packets.ACKPacket;
+import me.marknzl.shared.packets.DataPacket;
+import me.marknzl.shared.packets.ErrorPacket;
+import me.marknzl.shared.packets.RRQPacket;
 import me.marknzl.shared.SharedUtils;
 import me.marknzl.shared.UDPServer;
 
@@ -55,7 +55,7 @@ public class RRQ {
         }
 
         if (fileInputStream == null)
-            System.exit(1);
+            return;
 
         MessageDigest messageDigest = null;
 
@@ -81,13 +81,13 @@ public class RRQ {
                     System.out.println("Max transmission attempts reached. File transfer failed.");
                     socket.setSoTimeout(Constants.BASE_TIMEOUT);
                     fileInputStream.close();
-                    break;
+                    return;
                 }
 
                 DataPacket dataPacket = new DataPacket(blockNum, fileBuf, 0, bytesRead);
                 DatagramPacket outgoingPacket = new DatagramPacket(dataPacket.getPayload(), dataPacket.getPayload().length, clientPacket.getSocketAddress());
                 socket.send(outgoingPacket);
-                System.out.printf("Sent %d bytes\n", outgoingPacket.getLength());
+                System.out.printf("Sent %d bytes\n", outgoingPacket.getLength() - 4);
                 messageDigest.update(fileBuf, 0, bytesRead);
 
                 System.out.printf("Waiting for client's ACK for block %d\n", blockNum);
@@ -105,7 +105,7 @@ public class RRQ {
                     socket.setSoTimeout(Constants.BASE_TIMEOUT);    // Reset socket timeout to base timeout
                 } catch (SocketTimeoutException ex) {
                     tries--;
-                    System.out.printf("No ACK received for block %d\n. %d tries remaining.", blockNum, tries);
+                    System.out.printf("No ACK received for block %d.\n%d tries remaining.\n", blockNum, tries);
                     socket.setSoTimeout(socket.getSoTimeout() + 1000);  // Increase socket timeout interval by 1s for each subsequent retransmission attempt
                 }
             }

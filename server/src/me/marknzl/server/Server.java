@@ -1,9 +1,7 @@
 package me.marknzl.server;
 
 import me.marknzl.shared.Constants;
-import me.marknzl.shared.ErrorCode;
 import me.marknzl.shared.Packet;
-import me.marknzl.shared.Packets.*;
 import me.marknzl.shared.UDPServer;
 
 import java.io.*;

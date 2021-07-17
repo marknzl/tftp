@@ -4,10 +4,10 @@ import me.marknzl.client.Client;
 import me.marknzl.client.Command;
 import me.marknzl.client.ClientUtils;
 import me.marknzl.shared.*;
-import me.marknzl.shared.Packets.ACKPacket;
-import me.marknzl.shared.Packets.DataPacket;
-import me.marknzl.shared.Packets.ErrorPacket;
-import me.marknzl.shared.Packets.WRQPacket;
+import me.marknzl.shared.packets.ACKPacket;
+import me.marknzl.shared.packets.DataPacket;
+import me.marknzl.shared.packets.ErrorPacket;
+import me.marknzl.shared.packets.WRQPacket;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +17,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLSyntaxErrorException;
 import java.util.Scanner;
 
 public class WRQ implements Command {

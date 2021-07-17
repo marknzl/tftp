@@ -1,4 +1,4 @@
-package me.marknzl.shared.Packets;
+package me.marknzl.shared.packets;
 
 import me.marknzl.shared.ErrorCode;
 import me.marknzl.shared.SharedUtils;

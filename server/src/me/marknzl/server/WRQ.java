@@ -2,10 +2,10 @@ package me.marknzl.server;
 
 import me.marknzl.shared.Constants;
 import me.marknzl.shared.ErrorCode;
-import me.marknzl.shared.Packets.ACKPacket;
-import me.marknzl.shared.Packets.DataPacket;
-import me.marknzl.shared.Packets.ErrorPacket;
-import me.marknzl.shared.Packets.WRQPacket;
+import me.marknzl.shared.packets.ACKPacket;
+import me.marknzl.shared.packets.DataPacket;
+import me.marknzl.shared.packets.ErrorPacket;
+import me.marknzl.shared.packets.WRQPacket;
 import me.marknzl.shared.SharedUtils;
 import me.marknzl.shared.UDPServer;
 
